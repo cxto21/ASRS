@@ -1,0 +1,382 @@
+Project PROJECT-ASRS
+
+    Name
+
+        ASRS Specification
+
+    Specification
+
+        ASRS 1.0.0
+
+    Document Version
+
+        1.0.0
+
+    Compliance Level
+
+        Level 3
+
+
+Principal HUMAN
+
+    Type
+
+        Human
+
+    Description
+
+        Software engineer writing specifications
+
+    Can
+
+        Read ASRS documents
+
+        Write ASRS documents
+
+        Modify ASRS documents
+
+
+Principal AGENT
+
+    Type
+
+        Agent
+
+    Description
+
+        AI agent generating or validating ASRS
+
+    Can
+
+        Parse ASRS documents
+
+        Generate ASRS documents
+
+        Validate ASRS documents
+
+        Convert between formats
+
+
+Feature FEAT-SPECIFICATION
+
+    Description
+
+        ASRS language specification
+
+
+Feature FEAT-TOOLS
+
+    Description
+
+        Tools for working with ASRS documents
+
+
+Feature FEAT-EXAMPLES
+
+    Description
+
+        Example ASRS documents
+
+
+Scenario SCN-READ-SPEC
+
+    Principal
+
+        HUMAN
+
+    Given
+
+        ASRS specification exists
+
+    When
+
+        Read specification
+
+    Then
+
+        Understand language syntax and semantics
+
+
+Scenario SCN-GENERATE-ASRS
+
+    Principal
+
+        AGENT
+
+    Given
+
+        Software requirements provided
+
+    When
+
+        Generate ASRS document
+
+    Then
+
+        Valid ASRS document created
+
+
+Scenario SCN-VALIDATE-ASRS
+
+    Principal
+
+        AGENT
+
+    Given
+
+        ASRS document provided
+
+    When
+
+        Run validator
+
+    Then
+
+        Validation results returned
+
+
+Scenario SCN-CONVERT-FORMAT
+
+    Principal
+
+        AGENT
+
+    Given
+
+        ASRS or YAML document provided
+
+    When
+
+        Run converter
+
+    Then
+
+        Converted document produced
+
+
+Component COMP-SPEC
+
+    Type
+
+        Library
+
+    Description
+
+        ASRS language specification files
+
+    Responsibilities
+
+        Define syntax
+
+        Define semantics
+
+        Define validation rules
+
+    Verify
+
+        MUST define all 7 entities
+
+        MUST use RFC 2119 keywords
+
+        MUST be unambiguous
+
+
+Component COMP-VALIDATOR
+
+    Type
+
+        Library
+
+    Technology
+
+        Python
+
+    Description
+
+        Validates ASRS documents
+
+    Responsibilities
+
+        Parse ASRS syntax
+
+        Validate entity structure
+
+        Check reference integrity
+
+        Report errors and warnings
+
+    Verify
+
+        MUST detect invalid syntax
+
+        MUST detect duplicate IDs
+
+        MUST detect missing required properties
+
+        SHOULD provide line numbers in errors
+
+
+Component COMP-CONVERTER
+
+    Type
+
+        Library
+
+    Technology
+
+        Python
+
+    Description
+
+        Converts between ASRS and YAML formats
+
+    Responsibilities
+
+        Parse ASRS to internal representation
+
+        Generate YAML from internal representation
+
+        Parse YAML to internal representation
+
+        Generate ASRS from internal representation
+
+    Verify
+
+        MUST preserve all entity data
+
+        MUST handle round-trip conversion
+
+        MUST maintain reference integrity
+
+
+Resource RES-SPEC-FILES
+
+    Type
+
+        Bucket
+
+    Description
+
+        Specification markdown files
+
+
+Resource RES-EXAMPLES
+
+    Type
+
+        Bucket
+
+    Description
+
+        Example ASRS documents in YAML format
+
+
+Resource RES-LOG
+
+    Type
+
+        Table
+
+    Description
+
+        Modification log for versioning
+
+    Schema
+
+        version_id: string
+
+        timestamp: string
+
+        action: string
+
+        target: string
+
+        block_id: string
+
+        author: string
+
+        description: string
+
+
+Test TEST-READ-SPEC
+
+    Validates
+
+        SCN-READ-SPEC
+
+        COMP-SPEC
+
+    Given
+
+        Spec files exist
+
+    When
+
+        Read specification
+
+    Then
+
+        Content is clear and complete
+
+
+Test TEST-GENERATE-ASRS
+
+    Validates
+
+        SCN-GENERATE-ASRS
+
+        COMP-CONVERTER
+
+    Given
+
+        Valid requirements
+
+    When
+
+        Generate ASRS
+
+    Then
+
+        Document passes validation
+
+
+Test TEST-VALIDATE-ASRS
+
+    Validates
+
+        SCN-VALIDATE-ASRS
+
+        COMP-VALIDATOR
+
+    Given
+
+        Valid ASRS document
+
+    When
+
+        Run validator
+
+    Then
+
+        No errors reported
+
+
+Test TEST-CONVERT-FORMAT
+
+    Validates
+
+        SCN-CONVERT-FORMAT
+
+        COMP-CONVERTER
+
+    Given
+
+        ASRS document
+
+    When
+
+        Convert to YAML and back
+
+    Then
+
+        Original document preserved

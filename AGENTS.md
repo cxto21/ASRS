@@ -37,18 +37,25 @@ python3 tools/asrs-convert.py document.yaml --to asrs
 
 - `spec/` - Specification files (read-only reference)
 - `tools/` - Validation and conversion scripts
-- `examples/` - Example ASRS documents
-- `skill/` - Agent skill for ASRS
+- `examples/` - Example ASRS documents in YAML format
 - `docs/` - Additional documentation
 
 ## Don't Touch
 
 - `spec/` files are the canonical specification; edit only through formal process
+- `spec/meta.asrs` is the ASRS meta-spec (describes itself)
 - `llms.txt` is the agent navigation index; update when adding new files
 - `AGENTS.md` is this file; keep it under 150 lines
+
+## Versioning
+
+- `examples/.asrs.log` tracks all modifications
+- Format: VERSION_ID | TIMESTAMP | ACTION | TARGET | BLOCK_ID | AUTHOR | DESCRIPTION
+- Newest entries at top (head of file)
 
 ## Further Reading
 
 - `spec/ASRS.md` - Complete specification
+- `spec/meta.asrs` - ASRS meta-specification
 - `docs/srs-comparison.md` - Comparison with traditional SRS
 - `docs/agent-guidelines.md` - Guidelines for AI agents

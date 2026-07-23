@@ -1,6 +1,9 @@
 # ASRS
 ## Agent Software Requirements Specification
 
+> **Note:** This is the specification document (reference), not a standalone ASRS document.
+> For example ASRS documents, see the `examples/` directory.
+
 **Version:** 1.0.0-draft
 
 ---

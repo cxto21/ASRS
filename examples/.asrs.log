@@ -1,0 +1,48 @@
+# ASRS Modification Log
+# Format: VERSION_ID | TIMESTAMP | ACTION | TARGET | BLOCK_ID | AUTHOR | DESCRIPTION
+# Newest entries at top (head of file)
+
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-PROJECT-LOGIN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-PRINCIPAL-USER | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-FEATURE-AUTH | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-SCENARIO-LOGIN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-SCENARIO-LOGOUT | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-COMPONENT-WEB | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-COMPONENT-AUTH | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-RESOURCE-SESSIONS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-RESOURCE-USERS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-TEST-LOGIN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-TEST-LOGOUT | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-PROJECT-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-PRINCIPAL-USER | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-PRINCIPAL-EDITOR | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-PRINCIPAL-ADMIN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-FEATURE-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-FEATURE-CATALOG | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-READ-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-SEARCH-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-ADD-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-EDIT-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-DELETE-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-SCENARIO-MANAGE-USERS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-COMPONENT-WEB | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-COMPONENT-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-COMPONENT-AUTH | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-RESOURCE-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-RESOURCE-USERS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-RESOURCE-SESSIONS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-RESOURCE-CATEGORIES | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-TEST-READ-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-TEST-SEARCH-BOOKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-TEST-ADD-BOOK | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/books.yaml | BLOCK-TEST-ADD-BOOK-UNAUTHORIZED | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-PROJECT-SHORTENER | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-PRINCIPAL-USER | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-FEATURE-SHORTEN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-SCENARIO-SHORTEN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-SCENARIO-REDIRECT | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-COMPONENT-API | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-COMPONENT-STORAGE | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-RESOURCE-LINKS | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-TEST-SHORTEN | agent | Initial creation
+ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/url-shortener.yaml | BLOCK-TEST-REDIRECT | agent | Initial creation

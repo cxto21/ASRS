@@ -1,0 +1,230 @@
+project:
+  id: PROJECT-BOOKS
+  name: Book Library
+  specification: ASRS 1.0.0
+  document_version: 1.0.0
+  compliance_level: Level 3
+principals:
+- id: USER
+  type: Human
+  description: Regular user who can read books
+  can:
+  - Read books
+  - Search books
+  - Rate books
+- id: EDITOR
+  type: Human
+  description: Can manage book catalog
+  can:
+  - Add books
+  - Edit books
+  - Delete books
+  - Manage categories
+- id: ADMIN
+  type: Human
+  description: System administrator
+  can:
+  - Manage users
+  - View analytics
+  - System configuration
+features:
+- id: FEAT-BOOKS
+  description: Book management and reading
+- id: FEAT-CATALOG
+  description: Book catalog and search
+scenarios:
+- id: SCN-READ-BOOK
+  principal: USER
+  uses:
+  - COMP-WEB
+  - COMP-BOOKS
+  given:
+  - User logged in
+  - Book exists in catalog
+  when:
+  - Select book
+  then:
+  - Book content displayed
+- id: SCN-SEARCH-BOOKS
+  principal: USER
+  uses:
+  - COMP-WEB
+  - COMP-BOOKS
+  given:
+  - User logged in
+  when:
+  - Search by title or author
+  then:
+  - Matching books displayed
+- id: SCN-ADD-BOOK
+  principal: EDITOR
+  uses:
+  - COMP-WEB
+  - COMP-BOOKS
+  given:
+  - Editor logged in
+  when:
+  - Add new book with details
+  then:
+  - Book created in catalog
+- id: SCN-EDIT-BOOK
+  principal: EDITOR
+  uses:
+  - COMP-WEB
+  - COMP-BOOKS
+  given:
+  - Editor logged in
+  - Book exists
+  when:
+  - Update book details
+  then:
+  - Book updated
+- id: SCN-DELETE-BOOK
+  principal: EDITOR
+  uses:
+  - COMP-WEB
+  - COMP-BOOKS
+  given:
+  - Editor logged in
+  - Book exists
+  when:
+  - Delete book
+  then:
+  - Book removed from catalog
+- id: SCN-MANAGE-USERS
+  principal: ADMIN
+  uses:
+  - COMP-WEB
+  - COMP-AUTH
+  given:
+  - Admin logged in
+  when:
+  - View user list
+  then:
+  - User list displayed
+components:
+- id: COMP-WEB
+  type: Frontend
+  technology: React
+  responsibilities:
+  - User interface
+  - Form validation
+  - State management
+  uses:
+  - COMP-BOOKS
+  - COMP-AUTH
+  verify:
+  - MUST support Chrome-based browsers
+  - MUST be responsive
+  - SHOULD load < 2s
+- id: COMP-BOOKS
+  type: Service
+  technology: Node.js
+  responsibilities:
+  - Book CRUD operations
+  - Search functionality
+  - Catalog management
+  creates:
+  - RES-BOOKS
+  - RES-CATEGORIES
+  reads:
+  - RES-BOOKS
+  verify:
+  - MUST validate book data
+  - MUST handle concurrent edits
+  - SHOULD support pagination
+- id: COMP-AUTH
+  type: Service
+  technology: Supabase Auth
+  responsibilities:
+  - User authentication
+  - Role management
+  - Session handling
+  creates:
+  - RES-USERS
+  - RES-SESSIONS
+  verify:
+  - MUST authenticate users
+  - MUST enforce role-based access
+  - SHOULD respond < 500ms
+resources:
+- id: RES-BOOKS
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'title: string'
+  - 'author: string'
+  - 'isbn: string'
+  - 'category_id: uuid'
+  - 'content: text'
+  - 'created_at: timestamp'
+  - 'updated_at: timestamp'
+- id: RES-USERS
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'email: string'
+  - 'password_hash: string'
+  - 'role: enum(user, editor, admin)'
+  - 'created_at: timestamp'
+- id: RES-SESSIONS
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'user_id: uuid'
+  - 'created_at: timestamp'
+  - 'expires_at: timestamp'
+- id: RES-CATEGORIES
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'name: string'
+  - 'description: text'
+tests:
+- id: TEST-READ-BOOK
+  validates:
+  - SCN-READ-BOOK
+  - COMP-BOOKS
+  given:
+  - User logged in
+  - Book "Clean Code" exists
+  when:
+  - Select "Clean Code"
+  then:
+  - Book content displayed
+  - Reading progress saved
+- id: TEST-SEARCH-BOOKS
+  validates:
+  - SCN-SEARCH-BOOKS
+  - COMP-BOOKS
+  given:
+  - User logged in
+  - Books exist in catalog
+  when:
+  - Search "Clean"
+  then:
+  - Books matching "Clean" displayed
+  - Results sorted by relevance
+- id: TEST-ADD-BOOK
+  validates:
+  - SCN-ADD-BOOK
+  - COMP-BOOKS
+  given:
+  - Editor logged in
+  when:
+  - Add book with valid data
+  then:
+  - Book created
+  - Book appears in catalog
+- id: TEST-ADD-BOOK-UNAUTHORIZED
+  validates:
+  - SCN-ADD-BOOK
+  - COMP-BOOKS
+  given:
+  - Regular user logged in
+  when:
+  - Attempt to add book
+  then:
+  - Access denied
+  - Error message displayed
+

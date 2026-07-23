@@ -4,9 +4,10 @@
 
 ## Quick Start
 
-- [ASRS Specification](spec/ASRS.md) - Complete language specification
-- [Examples](examples/) - Example ASRS documents
+- [ASRS Meta-Spec](spec/meta.asrs) - ASRS describing itself
+- [Examples](examples/) - Example ASRS documents in YAML
 - [Validator](tools/asrs-validator.py) - Validate ASRS documents
+- [Converter](tools/asrs-convert.py) - Convert between ASRS and YAML
 
 ## Specification
 
@@ -43,16 +44,15 @@
 - [ASRS Validator](tools/asrs-validator.py) - Validate ASRS documents
 - [ASRS Converter](tools/asrs-convert.py) - Convert between ASRS and YAML formats
 
-## Examples
+## Examples (YAML Format)
 
-- [Login System](examples/login.asrs) - Simple authentication
-- [Book Library](examples/books.asrs) - Multi-user role system
-- [URL Shortener](examples/url-shortener.asrs) - API-focused service
+- [Login System](examples/login.yaml) - Simple authentication
+- [Book Library](examples/books.yaml) - Multi-user role system
+- [URL Shortener](examples/url-shortener.yaml) - API-focused service
 
-## Skill
+## Versioning
 
-- [ASRS Skill](skill/SKILL.md) - Agent skill for generating and validating ASRS
-- [Skill README](skill/README.md) - Skill documentation
+- [Modification Log](examples/.asrs.log) - Track all changes
 
 ## Documentation
 

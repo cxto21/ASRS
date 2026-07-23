@@ -1,0 +1,95 @@
+project:
+  id: PROJECT-LOGIN
+  name: Simple Login
+  specification: ASRS 1.0.0
+  document_version: 1.0.0
+principals:
+- id: USER
+  type: Human
+  description: Registered user
+  can:
+  - Login
+  - Logout
+features:
+- id: FEAT-AUTH
+  description: User authentication
+scenarios:
+- id: SCN-LOGIN
+  principal: USER
+  uses:
+  - COMP-WEB
+  - COMP-AUTH
+  given:
+  - Existing user
+  when:
+  - Submit credentials
+  then:
+  - Session created
+- id: SCN-LOGOUT
+  principal: USER
+  uses:
+  - COMP-WEB
+  - COMP-AUTH
+  given:
+  - User logged in
+  when:
+  - Click logout
+  then:
+  - Session destroyed
+components:
+- id: COMP-WEB
+  type: Frontend
+  technology: React
+  uses:
+  - COMP-AUTH
+  verify:
+  - MUST render login form
+  - MUST validate input client-side
+- id: COMP-AUTH
+  type: Service
+  technology: Supabase Auth
+  creates:
+  - RES-SESSIONS
+  verify:
+  - MUST authenticate users
+  - MUST reject invalid credentials
+  - SHOULD respond < 500ms
+resources:
+- id: RES-SESSIONS
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'user_id: uuid'
+  - 'created_at: timestamp'
+  - 'expires_at: timestamp'
+- id: RES-USERS
+  type: Table
+  schema:
+  - 'id: uuid'
+  - 'email: string'
+  - 'password_hash: string'
+  - 'created_at: timestamp'
+tests:
+- id: TEST-LOGIN
+  validates:
+  - SCN-LOGIN
+  - COMP-AUTH
+  given:
+  - Existing user with valid credentials
+  when:
+  - Submit login form
+  then:
+  - Session created
+  - User redirected to dashboard
+- id: TEST-LOGOUT
+  validates:
+  - SCN-LOGOUT
+  - COMP-AUTH
+  given:
+  - User logged in
+  when:
+  - Click logout button
+  then:
+  - Session destroyed
+  - User redirected to login page
+

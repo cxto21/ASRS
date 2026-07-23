@@ -1,0 +1,93 @@
+project:
+  id: PROJECT-SHORTENER
+  name: URL Shortener
+  specification: ASRS 1.0.0
+  document_version: 1.0.0
+principals:
+- id: USER
+  type: Human
+  can:
+  - Create short URLs
+  - View analytics
+features:
+- id: FEAT-SHORTEN
+  description: URL shortening service
+scenarios:
+- id: SCN-SHORTEN
+  principal: USER
+  uses:
+  - COMP-API
+  - COMP-STORAGE
+  given:
+  - Valid URL
+  when:
+  - Request short URL
+  then:
+  - Short URL returned
+- id: SCN-REDIRECT
+  principal: USER
+  uses:
+  - COMP-API
+  given:
+  - Short URL exists
+  when:
+  - Visit short URL
+  then:
+  - Redirect to original URL
+components:
+- id: COMP-API
+  type: Service
+  technology: Cloudflare Workers
+  responsibilities:
+  - URL generation
+  - Redirect handling
+  - Analytics tracking
+  creates:
+  - RES-LINKS
+  reads:
+  - RES-LINKS
+  verify:
+  - MUST generate unique short URLs
+  - MUST handle 1000+ requests/second
+  - SHOULD respond < 100ms
+- id: COMP-STORAGE
+  type: Service
+  technology: Cloudflare KV
+  responsibilities:
+  - URL storage
+  - Fast lookups
+  verify:
+  - MUST persist URLs
+  - MUST support global replication
+resources:
+- id: RES-LINKS
+  type: Cache
+  schema:
+  - 'short_code: string'
+  - 'original_url: string'
+  - 'created_at: timestamp'
+  - 'click_count: integer'
+tests:
+- id: TEST-SHORTEN
+  validates:
+  - SCN-SHORTEN
+  - COMP-API
+  given:
+  - Valid URL "https://example.com"
+  when:
+  - Request short URL
+  then:
+  - Short URL returned
+  - URL stored in database
+- id: TEST-REDIRECT
+  validates:
+  - SCN-REDIRECT
+  - COMP-API
+  given:
+  - Short code "abc123" maps to "https://example.com"
+  when:
+  - Visit "/abc123"
+  then:
+  - Redirect to "https://example.com"
+  - Click count incremented
+
