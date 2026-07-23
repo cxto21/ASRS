@@ -1,5 +1,7 @@
 # 16. Complete Example
 
+This example uses the abstract ASRS format. For the concrete YAML format, see [17-format-specification.md](17-format-specification.md).
+
 ```
 Project PROJECT-BOOKS
 

@@ -1,0 +1,155 @@
+project:
+  id: PROJECT-ASRS
+  name: ASRS Specification
+  specification: ASRS 1.0.0
+  document_version: 1.0.0
+  compliance_level: Level 3
+principals:
+- id: HUMAN
+  type: Human
+  description: Software engineer writing specifications
+  can:
+  - Read ASRS documents
+  - Write ASRS documents
+  - Modify ASRS documents
+- id: AGENT
+  type: Agent
+  description: AI agent generating or validating ASRS
+  can:
+  - Parse ASRS documents
+  - Generate ASRS documents
+  - Validate ASRS documents
+  - Convert between formats
+features:
+- id: FEAT-SPECIFICATION
+  description: ASRS language specification
+- id: FEAT-TOOLS
+  description: Tools for working with ASRS documents
+- id: FEAT-EXAMPLES
+  description: Example ASRS documents
+scenarios:
+- id: SCN-READ-SPEC
+  principal: HUMAN
+  given:
+  - ASRS specification exists
+  when:
+  - Read specification
+  then:
+  - Understand language syntax and semantics
+- id: SCN-GENERATE-ASRS
+  principal: AGENT
+  given:
+  - Software requirements provided
+  when:
+  - Generate ASRS document
+  then:
+  - Valid ASRS document created
+- id: SCN-VALIDATE-ASRS
+  principal: AGENT
+  given:
+  - ASRS document provided
+  when:
+  - Run validator
+  then:
+  - Validation results returned
+- id: SCN-CONVERT-FORMAT
+  principal: AGENT
+  given:
+  - ASRS or YAML document provided
+  when:
+  - Run converter
+  then:
+  - Converted document produced
+components:
+- id: COMP-SPEC
+  type: Library
+  responsibilities:
+  - Define syntax
+  - Define semantics
+  - Define validation rules
+  verify:
+  - MUST define all 7 entities
+  - MUST use RFC 2119 keywords
+  - MUST be unambiguous
+- id: COMP-VALIDATOR
+  type: Library
+  technology: Python
+  responsibilities:
+  - Parse ASRS syntax
+  - Validate entity structure
+  - Check reference integrity
+  - Report errors and warnings
+  verify:
+  - MUST detect invalid syntax
+  - MUST detect duplicate IDs
+  - MUST detect missing required properties
+  - SHOULD provide line numbers in errors
+- id: COMP-CONVERTER
+  type: Library
+  technology: Python
+  responsibilities:
+  - Parse ASRS to internal representation
+  - Generate YAML from internal representation
+  - Parse YAML to internal representation
+  - Generate ASRS from internal representation
+  verify:
+  - MUST preserve all entity data
+  - MUST handle round-trip conversion
+  - MUST maintain reference integrity
+resources:
+- id: RES-SPEC-FILES
+  type: Bucket
+- id: RES-EXAMPLES
+  type: Bucket
+- id: RES-LOG
+  type: Table
+  schema:
+  - 'version_id: string'
+  - 'timestamp: string'
+  - 'action: string'
+  - 'target: string'
+  - 'block_id: string'
+  - 'author: string'
+  - 'description: string'
+tests:
+- id: TEST-READ-SPEC
+  validates:
+  - SCN-READ-SPEC
+  - COMP-SPEC
+  given:
+  - Spec files exist
+  when:
+  - Read specification
+  then:
+  - Content is clear and complete
+- id: TEST-GENERATE-ASRS
+  validates:
+  - SCN-GENERATE-ASRS
+  - COMP-CONVERTER
+  given:
+  - Valid requirements
+  when:
+  - Generate ASRS
+  then:
+  - Document passes validation
+- id: TEST-VALIDATE-ASRS
+  validates:
+  - SCN-VALIDATE-ASRS
+  - COMP-VALIDATOR
+  given:
+  - Valid ASRS document
+  when:
+  - Run validator
+  then:
+  - No errors reported
+- id: TEST-CONVERT-FORMAT
+  validates:
+  - SCN-CONVERT-FORMAT
+  - COMP-CONVERTER
+  given:
+  - ASRS document
+  when:
+  - Convert to YAML and back
+  then:
+  - Original document preserved
+

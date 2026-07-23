@@ -1,73 +1,51 @@
 # 7. Grammar
 
-ASRS defines only three syntactic constructs.
+ASRS defines the abstract grammar. The concrete syntax depends on the format (see Section 17: Format Specification).
 
-- **Entity**: `<EntityType> <EntityID>`
-- **Property**: `Property Name` followed by indented value
-- **List**: Indented items under a property
+## Abstract Grammar
+
+ASRS defines three core constructs:
+
+- **Entity**: A uniquely identifiable concept
+- **Property**: A named attribute of an entity
+- **List**: An ordered collection of values
 
 ---
 
 ## Entity
 
-```
-<EntityType> <EntityID>
-
-    Property
-
-        Value
-```
-
-Example:
-
-```
-Component COMP-AUTH
-
-    Type
-
-        Service
-```
+Every entity has:
+- **Type**: The kind of entity (Project, Principal, Feature, Scenario, Component, Resource, Test)
+- **ID**: A unique identifier (PREFIX-NAME format)
+- **Properties**: Named attributes
 
 ---
 
 ## Property
 
-```
-Property
-
-    Value
-```
-
-Example:
-
-```
-Technology
-
-    Supabase Auth
-```
+Every property has:
+- **Name**: PascalCase identifier
+- **Value**: String, list, or reference
 
 ---
 
 ## List
 
-```
-Property
+Lists are:
+- **Ordered**: Sequence matters
+- **Typed**: All items share the same type
+- **Homogeneous**: No mixed types
 
-    Item 1
+---
 
-    Item 2
+## Format Mapping
 
-    Item 3
-```
+The abstract grammar maps to concrete formats:
 
-Example:
+| Abstract | YAML | JSON | TOML |
+|----------|------|------|------|
+| Entity | Top-level key + array item | Object in array | [[section]] |
+| Property | Object key | Object key | Key = value |
+| List | Array | Array | Array |
 
-```
-Responsibilities
-
-    Authentication
-
-    OAuth
-
-    Sessions
-```
+See Section 17 for complete format specifications.

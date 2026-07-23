@@ -2,6 +2,11 @@
 # Format: VERSION_ID | TIMESTAMP | ACTION | TARGET | BLOCK_ID | AUTHOR | DESCRIPTION
 # Newest entries at top (head of file)
 
+ASRS-1.0.0 | 2026-07-23T12:00:00Z | UPDATE | tools/asrs-validator.py | TOOL-VALIDATOR | agent | Added YAML format validation support
+ASRS-1.0.0 | 2026-07-23T12:00:00Z | UPDATE | llms.txt | BLOCK-NAVIGATION | agent | Updated for YAML format and new format spec
+ASRS-1.0.0 | 2026-07-23T12:00:00Z | UPDATE | spec/ASRS.md | BLOCK-SPEC | agent | Added reference to format specification (Section 17)
+ASRS-1.0.0 | 2026-07-23T12:00:00Z | UPDATE | spec/07-grammar.md | BLOCK-GRAMMAR | agent | Updated to abstract grammar with format mapping
+ASRS-1.0.0 | 2026-07-23T12:00:00Z | CREATE | spec/17-format-specification.md | BLOCK-FORMAT | agent | New format spec (YAML, JSON, TOML mappings)
 ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-PROJECT-LOGIN | agent | Initial creation
 ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-PRINCIPAL-USER | agent | Initial creation
 ASRS-1.0.0 | 2026-07-23T11:15:00Z | CREATE | examples/login.yaml | BLOCK-FEATURE-AUTH | agent | Initial creation

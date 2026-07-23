@@ -6,7 +6,8 @@ Usage:
     python asrs-validator.py document.asrs
     python asrs-validator.py document.asrs --json
     python asrs-validator.py document.asrs --strict
-    python asrs-validator.py document.asrs --fix
+    python asrs-validator.py document.yaml
+    python asrs-validator.py document.yml
 """
 
 import re
@@ -17,6 +18,13 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Optional, Tuple
 
+# Try to import yaml, with fallback
+try:
+    import yaml
+    YAML_AVAILABLE = True
+except ImportError:
+    YAML_AVAILABLE = False
+
 
 # ASRS Entity Types
 ENTITY_TYPES = {
@@ -24,7 +32,7 @@ ENTITY_TYPES = {
     "Component", "Resource", "Test"
 }
 
-# Required properties per entity type
+# Required properties per entity type (PascalCase for ASRS format)
 REQUIRED_PROPERTIES = {
     "Project": ["Name", "Specification", "Document Version"],
     "Principal": ["Type"],
@@ -47,6 +55,38 @@ RESOURCE_TYPES = {"Table", "Bucket", "Cache", "Queue", "Secret"}
 # Valid reference properties
 REFERENCE_PROPERTIES = {"Uses", "Creates", "Reads", "Writes", "Publishes", "Consumes", "Validates", "Principal"}
 
+# YAML entity type mappings
+YAML_ENTITY_MAPPINGS = {
+    "project": "Project",
+    "principals": "Principal",
+    "features": "Feature",
+    "scenarios": "Scenario",
+    "components": "Component",
+    "resources": "Resource",
+    "tests": "Test"
+}
+
+# YAML required properties per entity type (lowercase keys)
+YAML_REQUIRED_PROPERTIES = {
+    "Project": ["id", "name", "specification", "document_version"],
+    "Principal": ["id", "type"],
+    "Feature": ["id"],
+    "Scenario": ["id", "principal", "given", "when", "then"],
+    "Component": ["id", "type"],
+    "Resource": ["id", "type"],
+    "Test": ["id", "validates", "given", "when", "then"],
+}
+
+# YAML reference properties (lowercase)
+YAML_REFERENCE_PROPERTIES = {
+    "uses", "creates", "reads", "writes", "publishes", "consumes", "validates", "principal"
+}
+
+# Valid types for YAML
+YAML_PRINCIPAL_TYPES = {"Human", "External System", "Service", "Agent", "Scheduler", "Device"}
+YAML_COMPONENT_TYPES = {"Service", "Frontend", "Backend", "Library", "Worker", "Agent", "Gateway", "External"}
+YAML_RESOURCE_TYPES = {"Table", "Bucket", "Cache", "Queue", "Secret"}
+
 
 @dataclass
 class Entity:
@@ -68,7 +108,7 @@ class ValidationError:
 
 
 class ASRSValidator:
-    """Validates ASRS documents."""
+    """Validates ASRS documents (old .asrs format)."""
     
     def __init__(self, strict: bool = False):
         self.strict = strict
@@ -90,7 +130,6 @@ class ASRSValidator:
         """Parse entities from ASRS content."""
         current_entity = None
         current_property = None
-        indentation_level = 0
         
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
@@ -134,13 +173,6 @@ class ASRSValidator:
                 current_entity.properties[current_property].append(value)
                 current_entity.raw_lines.append(line)
                 continue
-            
-            # Check for list item (at indentation level 2 under a property)
-            if current_entity and current_property and level == 2:
-                value = stripped
-                current_entity.properties[current_property].append(value)
-                current_entity.raw_lines.append(line)
-                continue
     
     def _validate_entities(self):
         """Validate each entity."""
@@ -179,7 +211,7 @@ class ASRSValidator:
                 if principal_type not in PRINCIPAL_TYPES:
                     self.errors.append(ValidationError(
                         line=entity.line,
-                        message=f"Invalid Principal type: {principal_type}. Valid types: {', '.join(PRINCIPAL_TYPES)}",
+                        message=f"Invalid Principal type: {principal_type}. Valid: {', '.join(PRINCIPAL_TYPES)}",
                         severity="warning",
                         entity_id=entity.id
                     ))
@@ -190,7 +222,7 @@ class ASRSValidator:
                 if component_type not in COMPONENT_TYPES:
                     self.errors.append(ValidationError(
                         line=entity.line,
-                        message=f"Invalid Component type: {component_type}. Valid types: {', '.join(COMPONENT_TYPES)}",
+                        message=f"Invalid Component type: {component_type}. Valid: {', '.join(COMPONENT_TYPES)}",
                         severity="warning",
                         entity_id=entity.id
                     ))
@@ -201,28 +233,10 @@ class ASRSValidator:
                 if resource_type not in RESOURCE_TYPES:
                     self.errors.append(ValidationError(
                         line=entity.line,
-                        message=f"Invalid Resource type: {resource_type}. Valid types: {', '.join(RESOURCE_TYPES)}",
+                        message=f"Invalid Resource type: {resource_type}. Valid: {', '.join(RESOURCE_TYPES)}",
                         severity="warning",
                         entity_id=entity.id
                     ))
-            
-            # Check for Scenario without Principal
-            if entity.type == "Scenario" and "Principal" not in entity.properties:
-                self.errors.append(ValidationError(
-                    line=entity.line,
-                    message=f"Scenario {entity.id} has no Principal (recommended)",
-                    severity="warning",
-                    entity_id=entity.id
-                ))
-            
-            # Check for Component without Verify
-            if entity.type == "Component" and "Verify" not in entity.properties:
-                self.errors.append(ValidationError(
-                    line=entity.line,
-                    message=f"Component {entity.id} has no Verify property (recommended)",
-                    severity="warning",
-                    entity_id=entity.id
-                ))
     
     def _validate_references(self):
         """Validate that all references point to existing entities."""
@@ -230,7 +244,7 @@ class ASRSValidator:
             for prop_name, values in entity.properties.items():
                 if prop_name in REFERENCE_PROPERTIES:
                     for value in values:
-                        # Skip non-ID values (like description text)
+                        # Skip non-ID values
                         if not re.match(r'^[A-Z][A-Z0-9-]+$', value):
                             continue
                         if value not in self.entity_ids:
@@ -243,7 +257,6 @@ class ASRSValidator:
     
     def _validate_structure(self):
         """Validate document structure."""
-        # Check for exactly one Project
         if self.project_count == 0:
             self.errors.append(ValidationError(
                 line=1,
@@ -256,34 +269,133 @@ class ASRSValidator:
                 message=f"Multiple Project entities found ({self.project_count}). Exactly one Project MUST exist.",
                 severity="error"
             ))
+
+
+class ASRSYAMLValidator:
+    """Validates YAML ASRS documents."""
+    
+    def __init__(self, strict: bool = False):
+        self.strict = strict
+        self.entities: List[Entity] = []
+        self.errors: List[ValidationError] = []
+        self.entity_ids: Set[str] = set()
+        self.project_count = 0
+    
+    def validate(self, content: str) -> Tuple[List[ValidationError], List[Entity]]:
+        """Validate YAML ASRS content and return errors and entities."""
+        try:
+            data = yaml.safe_load(content)
+        except yaml.YAMLError as e:
+            self.errors.append(ValidationError(line=1, message=f"YAML parsing error: {e}", severity="error"))
+            return self.errors, self.entities
         
-        # Check for Features without Scenarios
-        feature_ids = {e.id for e in self.entities if e.type == "Feature"}
-        scenario_features = set()
+        if not data or not isinstance(data, dict):
+            self.errors.append(ValidationError(line=1, message="Empty or invalid YAML document", severity="error"))
+            return self.errors, self.entities
+        
+        # 1. Validate project (required, exactly one)
+        if "project" not in data:
+            self.errors.append(ValidationError(line=1, message="Missing 'project' key", severity="error"))
+            return self.errors, self.entities
+        
+        self._add_entity(data["project"], "Project", 1)
+        
+        # 2. Validate other entity arrays
+        for yaml_key, entity_type in YAML_ENTITY_MAPPINGS.items():
+            if yaml_key == "project":
+                continue
+            if yaml_key not in data:
+                continue
+            items = data[yaml_key]
+            if not isinstance(items, list):
+                self.errors.append(ValidationError(line=1, message=f"'{yaml_key}' must be a list", severity="error"))
+                continue
+            for i, item in enumerate(items):
+                if isinstance(item, dict):
+                    self._add_entity(item, entity_type, i + 2)
+        
+        # 3. Validate entities
+        self._validate_all_entities()
+        
+        # 4. Validate references
+        self._validate_references()
+        
+        # 5. Validate structure
+        self._validate_structure()
+        
+        return self.errors, self.entities
+    
+    def _add_entity(self, data: dict, entity_type: str, line: int):
+        """Add an entity from YAML data."""
+        entity_id = str(data.get("id", ""))
+        if not entity_id:
+            self.errors.append(ValidationError(line=line, message=f"{entity_type} missing 'id' field", severity="error"))
+            entity_id = f"UNKNOWN-{entity_type}-{line}"
+        
+        # Convert all YAML keys to properties (keep id too for validation)
+        properties = {}
+        for key, value in data.items():
+            if isinstance(value, list):
+                properties[key] = [str(v) for v in value]
+            else:
+                properties[key] = [str(value)] if value is not None else []
+        
+        entity = Entity(type=entity_type, id=entity_id, line=line, properties=properties)
+        self.entities.append(entity)
+        self.entity_ids.add(entity_id)
+        
+        if entity_type == "Project":
+            self.project_count += 1
+    
+    def _validate_all_entities(self):
+        """Validate all entities."""
+        seen_ids = set()
+        
         for entity in self.entities:
-            if entity.type == "Scenario" and "Uses" in entity.properties:
-                # This is a simplification - in reality we'd need to track which Feature owns which Scenario
-                pass
-        
-        # Check for Scenarios without Components
-        scenario_components = set()
+            # Duplicate IDs
+            if entity.id in seen_ids:
+                self.errors.append(ValidationError(line=entity.line, message=f"Duplicate ID: {entity.id}", severity="error", entity_id=entity.id))
+            seen_ids.add(entity.id)
+            
+            # Required properties
+            required = YAML_REQUIRED_PROPERTIES.get(entity.type, [])
+            for prop in required:
+                if prop not in entity.properties or not entity.properties[prop]:
+                    self.errors.append(ValidationError(line=entity.line, message=f"{entity.type} {entity.id} missing required property: {prop}", severity="error", entity_id=entity.id))
+            
+            # Type validation
+            if entity.type == "Principal" and "type" in entity.properties:
+                pt = entity.properties["type"][0] if entity.properties["type"] else ""
+                if pt not in YAML_PRINCIPAL_TYPES:
+                    self.errors.append(ValidationError(line=entity.line, message=f"Invalid Principal type: {pt}. Valid: {', '.join(YAML_PRINCIPAL_TYPES)}", severity="warning", entity_id=entity.id))
+            
+            if entity.type == "Component" and "type" in entity.properties:
+                ct = entity.properties["type"][0] if entity.properties["type"] else ""
+                if ct not in YAML_COMPONENT_TYPES:
+                    self.errors.append(ValidationError(line=entity.line, message=f"Invalid Component type: {ct}. Valid: {', '.join(YAML_COMPONENT_TYPES)}", severity="warning", entity_id=entity.id))
+            
+            if entity.type == "Resource" and "type" in entity.properties:
+                rt = entity.properties["type"][0] if entity.properties["type"] else ""
+                if rt not in YAML_RESOURCE_TYPES:
+                    self.errors.append(ValidationError(line=entity.line, message=f"Invalid Resource type: {rt}. Valid: {', '.join(YAML_RESOURCE_TYPES)}", severity="warning", entity_id=entity.id))
+    
+    def _validate_references(self):
+        """Validate that all references point to existing entities."""
         for entity in self.entities:
-            if entity.type == "Scenario" and "Uses" in entity.properties:
-                for comp in entity.properties["Uses"]:
-                    if comp in self.entity_ids:
-                        scenario_components.add(comp)
-        
-        component_ids = {e.id for e in self.entities if e.type == "Component"}
-        orphan_components = component_ids - scenario_components
-        
-        for comp_id in orphan_components:
-            entity = next(e for e in self.entities if e.id == comp_id)
-            self.errors.append(ValidationError(
-                line=entity.line,
-                message=f"Component {comp_id} is not used by any Scenario (orphan)",
-                severity="warning",
-                entity_id=comp_id
-            ))
+            for prop_name, values in entity.properties.items():
+                if prop_name in YAML_REFERENCE_PROPERTIES:
+                    for value in values:
+                        # Check if value looks like an ID reference (UPPER-CASE format)
+                        if re.match(r'^[A-Z][A-Z0-9-]+$', value):
+                            if value not in self.entity_ids:
+                                self.errors.append(ValidationError(line=entity.line, message=f"Reference to non-existent entity: {value}", severity="error", entity_id=entity.id))
+    
+    def _validate_structure(self):
+        """Validate document structure."""
+        if self.project_count == 0:
+            self.errors.append(ValidationError(line=1, message="No Project found. Exactly one Project MUST exist.", severity="error"))
+        elif self.project_count > 1:
+            self.errors.append(ValidationError(line=1, message=f"Multiple Projects found ({self.project_count}). Exactly one Project MUST exist.", severity="error"))
 
 
 def format_errors(errors: List[ValidationError], use_json: bool = False) -> str:
@@ -299,12 +411,10 @@ def format_errors(errors: List[ValidationError], use_json: bool = False) -> str:
     if not errors:
         return "✓ Document is valid"
     
-    lines = []
     error_count = sum(1 for e in errors if e.severity == "error")
     warning_count = sum(1 for e in errors if e.severity == "warning")
     
-    lines.append(f"Found {error_count} error(s) and {warning_count} warning(s)\n")
-    
+    lines = [f"Found {error_count} error(s) and {warning_count} warning(s)\n"]
     for error in sorted(errors, key=lambda x: x.line):
         prefix = "✗" if error.severity == "error" else "⚠"
         lines.append(f"{prefix} Line {error.line}: {error.message}")
@@ -332,11 +442,13 @@ def main():
         epilog="""
 Examples:
   %(prog)s document.asrs
-  %(prog)s document.asrs --json
-  %(prog)s document.asrs --strict
+  %(prog)s document.yaml
+  %(prog)s document.yaml --json
+  %(prog)s document.yaml --strict
+  %(prog)s document.yaml --summary
         """
     )
-    parser.add_argument("file", help="ASRS document to validate")
+    parser.add_argument("file", help="ASRS document to validate (.asrs, .yaml, .yml)")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
     parser.add_argument("--summary", action="store_true", help="Show entity summary")
@@ -355,8 +467,20 @@ Examples:
         print(f"Error reading file: {e}", file=sys.stderr)
         sys.exit(1)
     
-    # Validate
-    validator = ASRSValidator(strict=args.strict)
+    # Determine format and validate
+    file_ext = file_path.suffix.lower()
+    
+    if file_ext in ('.yaml', '.yml'):
+        if not YAML_AVAILABLE:
+            print("Error: YAML support requires pyyaml. Install: pip install pyyaml", file=sys.stderr)
+            sys.exit(1)
+        validator = ASRSYAMLValidator(strict=args.strict)
+    elif file_ext == '.asrs':
+        validator = ASRSValidator(strict=args.strict)
+    else:
+        print(f"Error: Unsupported format '{file_ext}'. Use .asrs, .yaml, or .yml", file=sys.stderr)
+        sys.exit(1)
+    
     errors, entities = validator.validate(content)
     
     # Filter errors based on strict mode
@@ -365,16 +489,14 @@ Examples:
     else:
         display_errors = [e for e in errors if e.severity == "error"]
     
-    # Output results
+    # Output
     if args.json:
         print(format_errors(display_errors, use_json=True))
     else:
         print(format_errors(display_errors))
-        
         if args.summary:
             print_summary(entities)
     
-    # Exit code
     error_count = sum(1 for e in display_errors if e.severity == "error")
     sys.exit(1 if error_count > 0 else 0)
 

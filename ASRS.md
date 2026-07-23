@@ -989,6 +989,14 @@ Test TEST-ADD-BOOK
 
 ---
 
+# 17. Format Specification
+
+ASRS is format-agnostic. The language can be expressed in any structured format.
+
+See [17-format-specification.md](17-format-specification.md) for complete format specifications (YAML, JSON, TOML).
+
+---
+
 # End of Specification
 
 **Agent Software Requirements Specification**

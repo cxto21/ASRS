@@ -4,10 +4,10 @@
 
 ## Quick Start
 
-- [ASRS Meta-Spec](spec/meta.asrs) - ASRS describing itself
+- [ASRS Meta-Spec](spec/meta.yaml) - ASRS describing itself (YAML format)
 - [Examples](examples/) - Example ASRS documents in YAML
 - [Validator](tools/asrs-validator.py) - Validate ASRS documents
-- [Converter](tools/asrs-convert.py) - Convert between ASRS and YAML
+- [Converter](tools/asrs-convert.py) - Convert between ASRS and YAML formats
 
 ## Specification
 
@@ -17,7 +17,7 @@
 - [4. Versioning](spec/04-versioning.md) - Semantic Versioning 2.0
 - [5. Standards References](spec/05-standards.md) - RFC 2119, SemVer, ISO 29148, Gherkin
 - [6. Core Entities](spec/06-core-entities.md) - Project, Principal, Feature, Scenario, Component, Resource, Test
-- [7. Grammar](spec/07-grammar.md) - Entity, Property, List constructs
+- [7. Grammar](spec/07-grammar.md) - Abstract grammar and format mapping
 - [8. Canonical Style](spec/08-canonical-style.md) - Formatting rules
 - [9. Identity](spec/09-identity.md) - ID format and uniqueness
 - [10. Entity Specification](spec/10-entity-specification.md) - Detailed entity definitions
@@ -26,6 +26,8 @@
 - [13. Traceability](spec/13-traceability.md) - Entity relationship chain
 - [14. Validation Rules](spec/14-validation-rules.md) - Document validity requirements
 - [15. Compliance Levels](spec/15-compliance-levels.md) - Level 1, 2, 3
+- [16. Complete Example](spec/16-complete-example.md) - Full example document
+- [17. Format Specification](spec/17-format-specification.md) - YAML, JSON, TOML formats
 
 ## Core Entities
 
@@ -39,10 +41,18 @@
 | Resource | Persistent data | Type |
 | Test | Executable verification | Validates, Given, When, Then |
 
+## Formats
+
+| Format | Extension | Status |
+|--------|-----------|--------|
+| YAML | `.yaml` | Primary |
+| JSON | `.json` | Planned |
+| TOML | `.toml` | Planned |
+
 ## Tools
 
 - [ASRS Validator](tools/asrs-validator.py) - Validate ASRS documents
-- [ASRS Converter](tools/asrs-convert.py) - Convert between ASRS and YAML formats
+- [ASRS Converter](tools/asrs-convert.py) - Convert between YAML, JSON, TOML formats
 
 ## Examples (YAML Format)
 

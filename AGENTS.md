@@ -13,16 +13,17 @@
 ### Validate ASRS documents
 
 ```bash
-python3 tools/asrs-validator.py document.asrs
-python3 tools/asrs-validator.py document.asrs --json
-python3 tools/asrs-validator.py document.asrs --strict
+python3 tools/asrs-validator.py document.yaml
+python3 tools/asrs-validator.py document.yaml --json
+python3 tools/asrs-validator.py document.yaml --strict
+python3 tools/asrs-validator.py document.yaml --summary
 ```
 
 ### Convert between formats
 
 ```bash
-python3 tools/asrs-convert.py document.asrs --to yaml
 python3 tools/asrs-convert.py document.yaml --to asrs
+python3 tools/asrs-convert.py document.asrs --to yaml
 ```
 
 ## Conventions
@@ -43,7 +44,7 @@ python3 tools/asrs-convert.py document.yaml --to asrs
 ## Don't Touch
 
 - `spec/` files are the canonical specification; edit only through formal process
-- `spec/meta.asrs` is the ASRS meta-spec (describes itself)
+- `spec/meta.yaml` is the ASRS meta-spec (describes itself in YAML format)
 - `llms.txt` is the agent navigation index; update when adding new files
 - `AGENTS.md` is this file; keep it under 150 lines
 
@@ -56,6 +57,6 @@ python3 tools/asrs-convert.py document.yaml --to asrs
 ## Further Reading
 
 - `spec/ASRS.md` - Complete specification
-- `spec/meta.asrs` - ASRS meta-specification
+- `spec/meta.yaml` - ASRS meta-specification
 - `docs/srs-comparison.md` - Comparison with traditional SRS
 - `docs/agent-guidelines.md` - Guidelines for AI agents

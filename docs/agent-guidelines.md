@@ -57,9 +57,10 @@ When generating ASRS from existing code:
 ### Use the Validator
 
 ```bash
-python3 tools/asrs-validator.py document.asrs
-python3 tools/asrs-validator.py document.asrs --json
-python3 tools/asrs-validator.py document.asrs --strict
+python3 tools/asrs-validator.py document.yaml
+python3 tools/asrs-validator.py document.yaml --json
+python3 tools/asrs-validator.py document.yaml --strict
+python3 tools/asrs-validator.py document.yaml --summary
 ```
 
 ### Common Issues
@@ -99,8 +100,8 @@ The validator checks:
 
 Convert between formats:
 ```bash
-python3 tools/asrs-convert.py document.asrs --to yaml
 python3 tools/asrs-convert.py document.yaml --to asrs
+python3 tools/asrs-convert.py document.asrs --to yaml
 ```
 
 ## Integration Points
