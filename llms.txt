@@ -1,0 +1,68 @@
+# ASRS - Agent Software Requirements Specification
+
+> A specification language for describing software systems, designed for humans and AI agents.
+
+## Quick Start
+
+- [ASRS Specification](spec/ASRS.md) - Complete language specification
+- [Examples](examples/) - Example ASRS documents
+- [Validator](tools/asrs-validator.py) - Validate ASRS documents
+
+## Specification
+
+- [1. Purpose](spec/01-purpose.md) - What ASRS is and who it's for
+- [2. Normative Language](spec/02-normative-language.md) - RFC 2119 keywords
+- [3. Design Principles](spec/03-design-principles.md) - Agent Native, Minimal Vocabulary, Behavior First
+- [4. Versioning](spec/04-versioning.md) - Semantic Versioning 2.0
+- [5. Standards References](spec/05-standards.md) - RFC 2119, SemVer, ISO 29148, Gherkin
+- [6. Core Entities](spec/06-core-entities.md) - Project, Principal, Feature, Scenario, Component, Resource, Test
+- [7. Grammar](spec/07-grammar.md) - Entity, Property, List constructs
+- [8. Canonical Style](spec/08-canonical-style.md) - Formatting rules
+- [9. Identity](spec/09-identity.md) - ID format and uniqueness
+- [10. Entity Specification](spec/10-entity-specification.md) - Detailed entity definitions
+- [11. References](spec/11-references.md) - Relationship properties
+- [12. Verification](spec/12-verification.md) - Correctness definitions
+- [13. Traceability](spec/13-traceability.md) - Entity relationship chain
+- [14. Validation Rules](spec/14-validation-rules.md) - Document validity requirements
+- [15. Compliance Levels](spec/15-compliance-levels.md) - Level 1, 2, 3
+
+## Core Entities
+
+| Entity | Purpose | Required Properties |
+|--------|---------|---------------------|
+| Project | Root of specification | Name, Specification, Document Version |
+| Principal | External entity interacting with system | Type |
+| Feature | System capability | (none) |
+| Scenario | Observable behavior | Given, When, Then |
+| Component | Implementation unit | Type |
+| Resource | Persistent data | Type |
+| Test | Executable verification | Validates, Given, When, Then |
+
+## Tools
+
+- [ASRS Validator](tools/asrs-validator.py) - Validate ASRS documents
+- [ASRS Converter](tools/asrs-convert.py) - Convert between ASRS and YAML formats
+
+## Examples
+
+- [Login System](examples/login.asrs) - Simple authentication
+- [Book Library](examples/books.asrs) - Multi-user role system
+- [URL Shortener](examples/url-shortener.asrs) - API-focused service
+
+## Skill
+
+- [ASRS Skill](skill/SKILL.md) - Agent skill for generating and validating ASRS
+- [Skill README](skill/README.md) - Skill documentation
+
+## Documentation
+
+- [SRS Comparison](docs/srs-comparison.md) - How ASRS compares to traditional SRS
+- [Agent Guidelines](docs/agent-guidelines.md) - Guidelines for AI agents working with ASRS
+
+## External References
+
+- [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt) - Key words for requirements
+- [Semantic Versioning](https://semver.org/) - Version numbering
+- [ISO/IEC/IEEE 29148](https://www.iso.org/standard/72368.html) - Requirements engineering
+- [Gherkin](https://cucumber.io/docs/gherkin/) - Behavior-driven syntax
+- [Agent Skills](https://agentskills.io/) - Skill format specification
